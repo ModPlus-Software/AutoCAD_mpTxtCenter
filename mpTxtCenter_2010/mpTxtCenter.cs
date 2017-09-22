@@ -8,8 +8,8 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.GraphicsInterface;
 using Autodesk.AutoCAD.Runtime;
-using ModPlus;
-using mpMsg;
+using ModPlusAPI;
+using ModPlusAPI.Windows;
 
 namespace mpTxtCenter
 {
@@ -18,6 +18,8 @@ namespace mpTxtCenter
         [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal)]
         public static void Main()
         {
+            Statistic.SendCommandStarting(new Interface());
+
             try
             {
                 var keepLoopin = true;
@@ -64,7 +66,7 @@ namespace mpTxtCenter
 
                     using (var tr = db.TransactionManager.StartTransaction())
                     {
-                        var fPt = MpCadHelpers.UcsToWcs(pt);
+                        var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pt);
                         var btr = (BlockTableRecord) tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite, false);
                         var jig = new MpTxtCenterJig();
                         var rs = jig.StartJig(psr.StringResult, fPt);
@@ -94,11 +96,11 @@ namespace mpTxtCenter
             } // try
             catch (System.Exception ex)
             {
-                MpExWin.Show(ex);
+                ExceptionBox.Show(ex);
             }
         }
 
-        static private void MpTxtCenterExist()
+        private static void MpTxtCenterExist()
         {
             try
             {
@@ -118,7 +120,7 @@ namespace mpTxtCenter
 
                 using (var tr = db.TransactionManager.StartTransaction())
                 {
-                    var fPt = MpCadHelpers.UcsToWcs(pointRes.Value);
+                    var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pointRes.Value);
                     var txt = (DBText) tr.GetObject(entRes.ObjectId, OpenMode.ForWrite);
                     txt.Justify = AttachmentPoint.MiddleCenter;
                     var jig = new MpTxtCenterJigExist();
@@ -129,7 +131,7 @@ namespace mpTxtCenter
             } // try
             catch (System.Exception ex)
             {
-                MpExWin.Show(ex);
+                ExceptionBox.Show(ex);
             }
         }
     }
