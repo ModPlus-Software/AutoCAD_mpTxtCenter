@@ -15,11 +15,20 @@ namespace mpTxtCenter
 {
     public class MpTxtCenter
     {
-        [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal)]
+        [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal | CommandFlags.UsePickSet)]
         public static void Main()
         {
             Statistic.SendCommandStarting(new Interface());
 
+            var workVariant =
+                UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant");
+            if (workVariant.Equals("Exist"))
+                MpTxtCenterExist(true);
+            else MpTxtCenterNew();
+        }
+
+        private static void MpTxtCenterNew()
+        {
             try
             {
                 var keepLoopin = true;
@@ -38,13 +47,14 @@ namespace mpTxtCenter
                         switch (ppr.Status)
                         {
                             case PromptStatus.Keyword:
-                                MpTxtCenterExist();
-                                break;
-                            case PromptStatus.Cancel:
+                                UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant", "Exist", true);
+                                MpTxtCenterExist(false);
                                 return;
                             case PromptStatus.Error:
                                 return;
                             case PromptStatus.None:
+                                return;
+                            case PromptStatus.Cancel:
                                 return;
                             case PromptStatus.Other:
                                 return;
@@ -55,8 +65,7 @@ namespace mpTxtCenter
                         }
                     }
                     keepLoopin = true;
-                    var pso =
-                        new PromptStringOptions("\nВведите текст: ") {AllowSpaces = true};
+                    var pso = new PromptStringOptions("\nВведите текст: ") { AllowSpaces = true };
                     var psr = ed.GetString(pso);
                     if (psr.Status != PromptStatus.OK || psr.StringResult == string.Empty)
                     {
@@ -67,7 +76,7 @@ namespace mpTxtCenter
                     using (var tr = db.TransactionManager.StartTransaction())
                     {
                         var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pt);
-                        var btr = (BlockTableRecord) tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite, false);
+                        var btr = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite, false);
                         var jig = new MpTxtCenterJig();
                         var rs = jig.StartJig(psr.StringResult, fPt);
                         if (rs.Status == PromptStatus.OK) // Если джига отработала хорошо
@@ -99,34 +108,76 @@ namespace mpTxtCenter
                 ExceptionBox.Show(ex);
             }
         }
-
-        private static void MpTxtCenterExist()
+        private static void MpTxtCenterExist(bool checkPresSelect)
         {
             try
             {
                 var doc = AcApp.DocumentManager.MdiActiveDocument;
                 var ed = doc.Editor;
                 var db = doc.Database;
-
-                var entOpt = new PromptEntityOptions("\nВыберите однострочный текст: ");
-                entOpt.SetRejectMessage("\nНеверный выбор!");
-                entOpt.AddAllowedClass(typeof(DBText), false);
-                var entRes = ed.GetEntity(entOpt);
-                if (entRes.Status != PromptStatus.OK) return;
-
-                var pointOpt = new PromptPointOptions("\nУкажите первую точку: ");
-                var pointRes = ed.GetPoint(pointOpt);
-                if (pointRes.Status != PromptStatus.OK) return;
-
-                using (var tr = db.TransactionManager.StartTransaction())
+                DBText preSelectTxt = null;
+                if (checkPresSelect)
                 {
-                    var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pointRes.Value);
-                    var txt = (DBText) tr.GetObject(entRes.ObjectId, OpenMode.ForWrite);
-                    txt.Justify = AttachmentPoint.MiddleCenter;
-                    var jig = new MpTxtCenterJigExist();
-                    var rs = jig.StartJig(txt, fPt);
-                    if (rs.Status != PromptStatus.OK) return;
-                    tr.Commit();
+                    PromptSelectionResult selected = ed.SelectImplied();
+                    if (selected.Status == PromptStatus.OK && selected.Value.Count == 1)
+                    {
+                        foreach (SelectedObject o in selected.Value)
+                        {
+                            using (var tr = doc.TransactionManager.StartTransaction())
+                            {
+                                var obj = tr.GetObject(o.ObjectId, OpenMode.ForRead) as DBText;
+                                if (obj != null)
+                                    preSelectTxt = obj;
+                            }
+
+                        }
+                    }
+                    else ed.SetImpliedSelection(new ObjectId[0]);
+                }
+                while (true)
+                {
+                    PromptEntityResult entRes = null;
+                    if (preSelectTxt == null)
+                    {
+                        var entOpt = new PromptEntityOptions("\nВыберите однострочный текст: ");
+                        entOpt.SetMessageAndKeywords("\nВыберите однострочный текст или [Новый]: ", "Новый");
+                        entOpt.SetRejectMessage("\nНеверный выбор!");
+                        entOpt.AddAllowedClass(typeof(DBText), false);
+                        entRes = ed.GetEntity(entOpt);
+                        if (entRes.Status == PromptStatus.Keyword)
+                        {
+                            UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter",
+                                "WorkVariant", "New", true);
+                            MpTxtCenterNew();
+                            break;
+                        }
+                        if (entRes.Status != PromptStatus.OK) return;
+                    }
+                    var pointOpt = new PromptPointOptions("\nУкажите первую точку: ");
+                    var pointRes = ed.GetPoint(pointOpt);
+                    if (pointRes.Status != PromptStatus.OK) return;
+                    using (var tr = db.TransactionManager.StartTransaction())
+                    {
+                        var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pointRes.Value);
+                        if (preSelectTxt != null)
+                        {
+                            DBText txt = (DBText) tr.GetObject(preSelectTxt.ObjectId, OpenMode.ForWrite);
+                            txt.Justify = AttachmentPoint.MiddleCenter;
+                            var jig = new MpTxtCenterJigExist();
+                            var rs = jig.StartJig(txt, fPt);
+                            if (rs.Status != PromptStatus.OK) return;
+                            preSelectTxt = null;
+                        }
+                        else
+                        {
+                            DBText txt = (DBText) tr.GetObject(entRes.ObjectId, OpenMode.ForWrite);
+                            txt.Justify = AttachmentPoint.MiddleCenter;
+                            var jig = new MpTxtCenterJigExist();
+                            var rs = jig.StartJig(txt, fPt);
+                            if (rs.Status != PromptStatus.OK) return;
+                        }
+                        tr.Commit();
+                    }
                 }
             } // try
             catch (System.Exception ex)
@@ -154,7 +205,7 @@ namespace mpTxtCenter
         {
             _prevPoint = new Point3d(0, 0, 0);
             _startPoint = fPt;
-            _line = new Line {StartPoint = fPt};
+            _line = new Line { StartPoint = fPt };
             _txt = new DBText();
             _txt.SetDatabaseDefaults();
             _txt.TextString = str;
@@ -229,7 +280,7 @@ namespace mpTxtCenter
         {
             _prevPoint = new Point3d(0, 0, 0);
             _startPoint = fPt;
-            _line = new Line {StartPoint = fPt};
+            _line = new Line { StartPoint = fPt };
             _txt = dbtext;
             return AcApp.DocumentManager.MdiActiveDocument.Editor.Drag(this);
         } // public AcEd.PromptResult StartJig(string str)
