@@ -15,6 +15,8 @@ namespace mpTxtCenter
 {
     public class MpTxtCenter
     {
+        private const string LangItem = "mpTxtCenter";
+
         [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal | CommandFlags.UsePickSet)]
         public static void Main()
         {
@@ -41,7 +43,7 @@ namespace mpTxtCenter
                     var ppo = new PromptPointOptions(string.Empty);
                     while (keepLoopin)
                     {
-                        ppo.SetMessageAndKeywords("\nУкажите первую точку или [Существующий]", "Существующий");
+                        ppo.SetMessageAndKeywords("\n" + Language.GetItem(LangItem, "msg1"), Language.GetItem(LangItem, "msg2"));
                         ppo.AppendKeywordsToMessage = true;
                         var ppr = ed.GetPoint(ppo);
                         switch (ppr.Status)
@@ -65,7 +67,7 @@ namespace mpTxtCenter
                         }
                     }
                     keepLoopin = true;
-                    var pso = new PromptStringOptions("\nВведите текст: ") { AllowSpaces = true };
+                    var pso = new PromptStringOptions("\n" + Language.GetItem(LangItem, "msg3")) { AllowSpaces = true };
                     var psr = ed.GetString(pso);
                     if (psr.Status != PromptStatus.OK || psr.StringResult == string.Empty)
                     {
@@ -139,9 +141,9 @@ namespace mpTxtCenter
                     PromptEntityResult entRes = null;
                     if (preSelectTxt == null)
                     {
-                        var entOpt = new PromptEntityOptions("\nВыберите однострочный текст: ");
-                        entOpt.SetMessageAndKeywords("\nВыберите однострочный текст или [Новый]: ", "Новый");
-                        entOpt.SetRejectMessage("\nНеверный выбор!");
+                        var entOpt = new PromptEntityOptions("\n" + Language.GetItem(LangItem, "msg4"));
+                        entOpt.SetMessageAndKeywords("\n" + Language.GetItem(LangItem, "msg5"), Language.GetItem(LangItem, "msg6"));
+                        entOpt.SetRejectMessage("\n" + Language.GetItem(LangItem, "msg7"));
                         entOpt.AddAllowedClass(typeof(DBText), false);
                         entRes = ed.GetEntity(entOpt);
                         if (entRes.Status == PromptStatus.Keyword)
@@ -153,7 +155,7 @@ namespace mpTxtCenter
                         }
                         if (entRes.Status != PromptStatus.OK) return;
                     }
-                    var pointOpt = new PromptPointOptions("\nУкажите первую точку: ");
+                    var pointOpt = new PromptPointOptions("\n" + Language.GetItem(LangItem, "msg8"));
                     var pointRes = ed.GetPoint(pointOpt);
                     if (pointRes.Status != PromptStatus.OK) return;
                     using (var tr = db.TransactionManager.StartTransaction())
@@ -189,6 +191,7 @@ namespace mpTxtCenter
 
     public class MpTxtCenterJig : DrawJig
     {
+        private const string LangItem = "mpTxtCenter";
         private Point3d _prevPoint; // Предыдущая точка
         private Point3d _currPoint; // Нынешняя точка
         private Point3d _startPoint;
@@ -215,7 +218,7 @@ namespace mpTxtCenter
 
         protected override SamplerStatus Sampler(JigPrompts prompts)
         {
-            var jppo = new JigPromptPointOptions("\nУкажите вторую точку: ")
+            var jppo = new JigPromptPointOptions("\n" + Language.GetItem(LangItem, "msg9"))
             {
                 BasePoint = _startPoint,
                 UseBasePoint = true,
@@ -264,6 +267,7 @@ namespace mpTxtCenter
 
     public class MpTxtCenterJigExist : DrawJig
     {
+        private const string LangItem = "mpTxtCenter";
         private Point3d _prevPoint; // Предыдущая точка
         private Point3d _currPoint; // Нинешняя точка
         private Point3d _startPoint;
@@ -287,7 +291,7 @@ namespace mpTxtCenter
 
         protected override SamplerStatus Sampler(JigPrompts prompts)
         {
-            var jppo = new JigPromptPointOptions("\nУкажите вторую точку: ")
+            var jppo = new JigPromptPointOptions("\n" + Language.GetItem(LangItem, "msg9"))
             {
                 BasePoint = _startPoint,
                 UseBasePoint = true,
