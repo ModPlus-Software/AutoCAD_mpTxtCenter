@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2010", "mpTxtCenter_2010\mpTxtCenter_2010.csproj", "{5889F326-D7F6-401E-856D-2C3672EBBA1B}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2017", "mpTxtCenter_2017\mpTxtCenter_2017.csproj", "{9429C380-C465-45A5-B7F1-F377CD4045FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2018", "mpTxtCenter_2018\mpTxtCenter_2018.csproj", "{230B2F63-60D2-4919-B575-5ECAB040C87B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2019", "mpTxtCenter_2019\mpTxtCenter_2019.csproj", "{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{230B2F63-60D2-4919-B575-5ECAB040C87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{230B2F63-60D2-4919-B575-5ECAB040C87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{230B2F63-60D2-4919-B575-5ECAB040C87B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
