@@ -16,30 +16,30 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\..\ModPlus\Functions\mpTxtCenter\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ac2013</DefineConstants>
+    <OutputPath>..\..\..\..\..\..\..\ModPlus\Functions\AutoCAD\mpTxtCenter\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\..\ModPlus\Functions\mpTxtCenter\</OutputPath>
-    <DefineConstants>TRACE;ac2013</DefineConstants>
+    <OutputPath>..\..\..\..\..\..\..\ModPlus\Functions\AutoCAD\mpTxtCenter\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
-      <HintPath>..\..\..\..\_Acad dlls\2018\accoremgd.dll</HintPath>
+      <HintPath>C:\_Acad dlls\2018\accoremgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="acdbmgd">
-      <HintPath>..\..\..\..\_Acad dlls\2018\acdbmgd.dll</HintPath>
+      <HintPath>C:\_Acad dlls\2018\acdbmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="acmgd">
-      <HintPath>..\..\..\..\_Acad dlls\2018\acmgd.dll</HintPath>
+      <HintPath>C:\_Acad dlls\2018\acmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ModPlusAPI">
@@ -53,18 +53,25 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\mpTxtCenter_2010\mpTxtCenter.cs">
+    <Compile Include="..\mpTxtCenter_2013\mpTxtCenter.cs">
       <Link>mpTxtCenter.cs</Link>
     </Compile>
     <Compile Include="Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Resource Include="..\mpTxtCenter_2010\Resources\MpTxtCenter_16x16.png">
-      <Link>Resources\MpTxtCenter_16x16.png</Link>
+    <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_16x16.png">
+      <Link>Resources\mpTxtCenter_16x16.png</Link>
     </Resource>
-    <Resource Include="..\mpTxtCenter_2010\Resources\MpTxtCenter_32x32.png">
-      <Link>Resources\MpTxtCenter_32x32.png</Link>
+    <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_16x16_dark.png">
+      <Link>Resources\mpTxtCenter_16x16_dark.png</Link>
+    </Resource>
+    <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_32x32.png">
+      <Link>Resources\mpTxtCenter_32x32.png</Link>
+    </Resource>
+    <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_32x32_dark.png">
+      <Link>Resources\mpTxtCenter_32x32_dark.png</Link>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

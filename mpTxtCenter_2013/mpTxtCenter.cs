@@ -1,8 +1,4 @@
-﻿#if ac2010
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
-#elif ac2013
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
-#endif
+﻿using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -21,7 +17,7 @@ namespace mpTxtCenter
         public static void Main()
         {
             Statistic.SendCommandStarting(new Interface());
-
+            
             var workVariant =
                 UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant");
             if (workVariant.Equals("Exist"))
@@ -33,7 +29,7 @@ namespace mpTxtCenter
         {
             try
             {
-                var keepLoopin = true;
+                var keepLooping = true;
                 var pt = new Point3d();
                 var doc = AcApp.DocumentManager.MdiActiveDocument;
                 var ed = doc.Editor;
@@ -41,7 +37,7 @@ namespace mpTxtCenter
                 while (true)
                 {
                     var ppo = new PromptPointOptions(string.Empty);
-                    while (keepLoopin)
+                    while (keepLooping)
                     {
                         ppo.SetMessageAndKeywords("\n" + Language.GetItem(LangItem, "msg1"), Language.GetItem(LangItem, "msg2"));
                         ppo.AppendKeywordsToMessage = true;
@@ -62,11 +58,11 @@ namespace mpTxtCenter
                                 return;
                             case PromptStatus.OK:
                                 pt = ppr.Value;
-                                keepLoopin = false;
+                                keepLooping = false;
                                 break;
                         }
                     }
-                    keepLoopin = true;
+                    keepLooping = true;
                     var pso = new PromptStringOptions("\n" + Language.GetItem(LangItem, "msg3")) { AllowSpaces = true };
                     var psr = ed.GetString(pso);
                     if (psr.Status != PromptStatus.OK || psr.StringResult == string.Empty)
