@@ -16,7 +16,7 @@ namespace mpTxtCenter
         [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal | CommandFlags.UsePickSet)]
         public static void Main()
         {
-            Statistic.SendCommandStarting(new Interface());
+            Statistic.SendCommandStarting(new ModPlusConnector());
             
             var workVariant =
                 UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant");

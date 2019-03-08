@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2018", "mpTxtCe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2019", "mpTxtCenter_2019\mpTxtCenter_2019.csproj", "{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpTxtCenter_2020", "mpTxtCenter_2020\mpTxtCenter_2020.csproj", "{414E77B5-7795-4A21-84A8-671318877551}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F3CBA80-E675-40E6-BAC9-1075696EC5FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{414E77B5-7795-4A21-84A8-671318877551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{414E77B5-7795-4A21-84A8-671318877551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{414E77B5-7795-4A21-84A8-671318877551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{414E77B5-7795-4A21-84A8-671318877551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
