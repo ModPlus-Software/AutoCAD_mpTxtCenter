@@ -40,8 +40,37 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Compile Include="..\mpTxtCenter_2013\ModPlusConnector.cs">
+      <Link>ModPlusConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\mpTxtCenter_2013\mpTxtCenter.cs">
+      <Link>mpTxtCenter.cs</Link>
+    </Compile>
+    <Compile Include="..\mpTxtCenter_2013\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\mptxtcenter_2013\resources\mpTxtCenter_16x16.png">
+      <Link>Resources\mpTxtCenter_16x16.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\mptxtcenter_2013\resources\mpTxtCenter_16x16_dark.png">
+      <Link>Resources\mpTxtCenter_16x16_dark.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\mptxtcenter_2013\resources\mpTxtCenter_32x32.png">
+      <Link>Resources\mpTxtCenter_32x32.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\mptxtcenter_2013\resources\mpTxtCenter_32x32_dark.png">
+      <Link>Resources\mpTxtCenter_32x32_dark.png</Link>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
