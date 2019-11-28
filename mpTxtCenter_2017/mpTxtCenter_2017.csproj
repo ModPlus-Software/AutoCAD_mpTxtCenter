@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>$(SolutionDir)\ModPlus.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
       <HintPath>C:\_Acad dlls\2017\accoremgd.dll</HintPath>
@@ -53,17 +56,25 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\mpTxtCenter_2013\ExistTextCenterJig.cs">
+      <Link>ExistTextCenterJig.cs</Link>
+    </Compile>
     <Compile Include="..\mpTxtCenter_2013\ModPlusConnector.cs">
       <Link>ModPlusConnector.cs</Link>
-    </Compile>
-    <Compile Include="..\mpTxtCenter_2013\mpTxtCenter.cs">
-      <Link>mpTxtCenter.cs</Link>
     </Compile>
     <Compile Include="..\mpTxtCenter_2013\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\mpTxtCenter_2013\TextCenter.cs">
+      <Link>TextCenter.cs</Link>
+    </Compile>
+    <Compile Include="..\mpTxtCenter_2013\TextCenterJig.cs">
+      <Link>TextCenterJig.cs</Link>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_16x16.png">
       <Link>Resources\mpTxtCenter_16x16.png</Link>
@@ -77,6 +88,10 @@
     <Resource Include="..\mpTxtCenter_2013\Resources\mpTxtCenter_32x32_dark.png">
       <Link>Resources\mpTxtCenter_32x32_dark.png</Link>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

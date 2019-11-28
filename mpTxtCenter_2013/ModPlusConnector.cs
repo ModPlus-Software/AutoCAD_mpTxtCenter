@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using ModPlusAPI.Interfaces;
-
+﻿#pragma warning disable SA1600 // Elements should be documented
 namespace mpTxtCenter
 {
+    using System;
+    using System.Collections.Generic;
+    using ModPlusAPI.Interfaces;
+
     public class ModPlusConnector : IModPlusFunctionInterface
     {
         public SupportedProduct SupportedProduct => SupportedProduct.AutoCAD;
@@ -36,7 +37,7 @@ namespace mpTxtCenter
         
         public string LName => "Текст по центру";
         
-        public string Description => "Функция позволяет создавать однострочный текст или выравнивать существующий по середине между двумя указанными точками";
+        public string Description => "Плагин позволяет создавать однострочный текст или выравнивать существующий по середине между двумя указанными точками";
         
         public string Author => "Пекшев Александр aka Modis";
         
@@ -61,3 +62,4 @@ namespace mpTxtCenter
         public List<string> SubClassNames => new List<string>();
     }
 }
+#pragma warning restore SA1600 // Elements should be documented

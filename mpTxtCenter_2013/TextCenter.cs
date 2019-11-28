@@ -3,7 +3,6 @@
     using Autodesk.AutoCAD.DatabaseServices;
     using Autodesk.AutoCAD.EditorInput;
     using Autodesk.AutoCAD.Geometry;
-    using Autodesk.AutoCAD.GraphicsInterface;
     using Autodesk.AutoCAD.Runtime;
     using ModPlusAPI;
     using ModPlusAPI.Windows;
@@ -119,7 +118,7 @@
                 DBText preSelectTxt = null;
                 if (checkPresSelect)
                 {
-                    PromptSelectionResult selected = ed.SelectImplied();
+                    var selected = ed.SelectImplied();
                     if (selected.Status == PromptStatus.OK && selected.Value.Count == 1)
                     {
                         foreach (SelectedObject o in selected.Value)
@@ -169,7 +168,7 @@
                         var fPt = ModPlus.Helpers.AutocadHelpers.UcsToWcs(pointRes.Value);
                         if (preSelectTxt != null)
                         {
-                            DBText txt = (DBText) tr.GetObject(preSelectTxt.ObjectId, OpenMode.ForWrite);
+                            var txt = (DBText)tr.GetObject(preSelectTxt.ObjectId, OpenMode.ForWrite);
                             txt.Justify = AttachmentPoint.MiddleCenter;
                             var jig = new ExistTextCenterJig();
                             var rs = jig.StartJig(txt, fPt);
@@ -179,7 +178,7 @@
                         }
                         else
                         {
-                            DBText txt = (DBText) tr.GetObject(entRes.ObjectId, OpenMode.ForWrite);
+                            var txt = (DBText)tr.GetObject(entRes.ObjectId, OpenMode.ForWrite);
                             txt.Justify = AttachmentPoint.MiddleCenter;
                             var jig = new ExistTextCenterJig();
                             var rs = jig.StartJig(txt, fPt);
@@ -195,163 +194,6 @@
             {
                 ExceptionBox.Show(ex);
             }
-        }
-    }
-
-    public class TextCenterJig : DrawJig
-    {
-        private const string LangItem = "mpTxtCenter";
-        private Point3d _prevPoint; // Предыдущая точка
-        private Point3d _currPoint; // Нынешняя точка
-        private Point3d _startPoint;
-        private DBText _txt; // Текстовый объект
-        private Line _line;
-        private Point3d _middlePt;
-
-        public Point3d Point()
-        {
-            return _middlePt;
-        }
-
-        public PromptResult StartJig(string str, Point3d fPt)
-        {
-            _prevPoint = new Point3d(0, 0, 0);
-            _startPoint = fPt;
-            _line = new Line { StartPoint = fPt };
-            _txt = new DBText();
-            _txt.SetDatabaseDefaults();
-            _txt.TextString = str;
-            _txt.Justify = AttachmentPoint.MiddleCenter;
-            return AcApp.DocumentManager.MdiActiveDocument.Editor.Drag(this);
-        } // public AcEd.PromptResult StartJig(string str)
-
-        protected override SamplerStatus Sampler(JigPrompts prompts)
-        {
-            var jppo = new JigPromptPointOptions("\n" + Language.GetItem(LangItem, "msg9"))
-            {
-                BasePoint = _startPoint,
-                UseBasePoint = true,
-                UserInputControls = 
-                    UserInputControls.Accept3dCoordinates |
-                    UserInputControls.NoZeroResponseAccepted |
-                    UserInputControls.AcceptOtherInputString |
-                    UserInputControls.NoNegativeResponseAccepted
-            };
-            var rs = prompts.AcquirePoint(jppo);
-            _currPoint = rs.Value;
-            if (rs.Status != PromptStatus.OK)
-                return SamplerStatus.Cancel;
-            if (CursorHasMoved())
-            {
-                var displacementVector = _prevPoint.GetVectorTo(_currPoint);
-                _txt.TransformBy(Matrix3d.Displacement(displacementVector));
-                _prevPoint = _currPoint;
-                return SamplerStatus.OK;
-            }
-
-            return SamplerStatus.NoChange;
-        }
-
-        protected override bool WorldDraw(WorldDraw draw)
-        {
-            _middlePt = new Point3d(
-                (_line.StartPoint.X + _currPoint.X) / 2,
-                (_line.StartPoint.Y + _currPoint.Y) / 2,
-                (_line.StartPoint.Z + _currPoint.Z) / 2);
-            _txt.AlignmentPoint = _middlePt;
-            _txt.Position =
-                new Point3d(
-                    _txt.AlignmentPoint.X - ((_txt.GeometricExtents.MaxPoint.X - _txt.GeometricExtents.MinPoint.X) / 2),
-                    _txt.AlignmentPoint.Y - ((_txt.GeometricExtents.MaxPoint.Y - _txt.GeometricExtents.MinPoint.Y) / 2),
-                    _txt.AlignmentPoint.Z - ((_txt.GeometricExtents.MaxPoint.Z - _txt.GeometricExtents.MinPoint.Z) / 2));
-
-            _line.StartPoint = _startPoint;
-            _line.EndPoint = _currPoint;
-            draw.Geometry.Draw(_txt);
-            draw.Geometry.Draw(_line);
-            return true;
-        }
-
-        private bool CursorHasMoved()
-        {
-            return _currPoint.DistanceTo(_prevPoint) > 1e-6;
-        }
-    }
-
-    public class ExistTextCenterJig : DrawJig
-    {
-        private const string LangItem = "mpTxtCenter";
-        private Point3d _prevPoint;
-        private Point3d _currentPoint;
-        private Point3d _startPoint;
-        private DBText _txt;
-        private Line _line;
-        private Point3d _middlePt;
-
-        public Point3d Point()
-        {
-            return _middlePt;
-        }
-
-        public PromptResult StartJig(DBText dbtext, Point3d fPt)
-        {
-            _prevPoint = new Point3d(0, 0, 0);
-            _startPoint = fPt;
-            _line = new Line { StartPoint = fPt };
-            _txt = dbtext;
-            return AcApp.DocumentManager.MdiActiveDocument.Editor.Drag(this);
-        } // public AcEd.PromptResult StartJig(string str)
-
-        protected override SamplerStatus Sampler(JigPrompts prompts)
-        {
-            var jigPromptPointOptions = new JigPromptPointOptions("\n" + Language.GetItem(LangItem, "msg9"))
-            {
-                BasePoint = _startPoint,
-                UseBasePoint = true,
-                UserInputControls = 
-                    UserInputControls.Accept3dCoordinates |
-                    UserInputControls.NoZeroResponseAccepted |
-                    UserInputControls.AcceptOtherInputString |
-                    UserInputControls.NoNegativeResponseAccepted
-            };
-            var rs = prompts.AcquirePoint(jigPromptPointOptions);
-            _currentPoint = rs.Value;
-            if (rs.Status != PromptStatus.OK)
-                return SamplerStatus.Cancel;
-            if (CursorHasMoved())
-            {
-                var displacementVector = _prevPoint.GetVectorTo(_currentPoint);
-                _txt.TransformBy(Matrix3d.Displacement(displacementVector));
-                _prevPoint = _currentPoint;
-                return SamplerStatus.OK;
-            }
-
-            return SamplerStatus.NoChange;
-        }
-
-        protected override bool WorldDraw(WorldDraw draw)
-        {
-            _middlePt = new Point3d(
-                (_line.StartPoint.X + _currentPoint.X) / 2,
-                (_line.StartPoint.Y + _currentPoint.Y) / 2,
-                (_line.StartPoint.Z + _currentPoint.Z) / 2);
-            _txt.AlignmentPoint = _middlePt;
-            _txt.Position =
-                new Point3d(
-                    _txt.AlignmentPoint.X - ((_txt.GeometricExtents.MaxPoint.X - _txt.GeometricExtents.MinPoint.X) / 2),
-                    _txt.AlignmentPoint.Y - ((_txt.GeometricExtents.MaxPoint.Y - _txt.GeometricExtents.MinPoint.Y) / 2),
-                    _txt.AlignmentPoint.Z - ((_txt.GeometricExtents.MaxPoint.Z - _txt.GeometricExtents.MinPoint.Z) / 2));
-
-            _line.StartPoint = _startPoint;
-            _line.EndPoint = _currentPoint;
-            draw.Geometry.Draw(_txt);
-            draw.Geometry.Draw(_line);
-            return true;
-        }
-
-        private bool CursorHasMoved()
-        {
-            return _currentPoint.DistanceTo(_prevPoint) > 1e-6;
         }
     }
 }
