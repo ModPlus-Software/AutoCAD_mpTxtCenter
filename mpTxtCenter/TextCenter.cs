@@ -8,17 +8,21 @@
     using ModPlusAPI.Windows;
     using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
-    public class TextCenter
+    public static class TextCenter
     {
-        private const string LangItem = "mpTxtCenter";
+        private static readonly string LangItem;
+
+        static TextCenter()
+        {
+            LangItem = new ModPlusConnector().Name;
+        }
 
         [CommandMethod("ModPlus", "mpTxtCenter", CommandFlags.Modal | CommandFlags.UsePickSet)]
         public static void Main()
         {
             Statistic.SendCommandStarting(new ModPlusConnector());
             
-            var workVariant =
-                UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant");
+            var workVariant = UserConfigFile.GetValue(LangItem, "WorkVariant");
             if (workVariant.Equals("Exist"))
                 MpTxtCenterExist(true);
             else
@@ -39,13 +43,13 @@
                     var ppo = new PromptPointOptions(string.Empty);
                     while (keepLooping)
                     {
-                        ppo.SetMessageAndKeywords("\n" + Language.GetItem(LangItem, "msg1"), Language.GetItem(LangItem, "msg2"));
+                        ppo.SetMessageAndKeywords($"\n{Language.GetItem("msg1")}", Language.GetItem("msg2"));
                         ppo.AppendKeywordsToMessage = true;
                         var ppr = ed.GetPoint(ppo);
                         switch (ppr.Status)
                         {
                             case PromptStatus.Keyword:
-                                UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter", "WorkVariant", "Exist", true);
+                                UserConfigFile.SetValue(LangItem, "WorkVariant", "Exist", true);
                                 MpTxtCenterExist(false);
                                 return;
                             case PromptStatus.Error:
@@ -64,7 +68,7 @@
                     }
 
                     keepLooping = true;
-                    var pso = new PromptStringOptions("\n" + Language.GetItem(LangItem, "msg3")) { AllowSpaces = true };
+                    var pso = new PromptStringOptions($"\n{Language.GetItem("msg3")}") { AllowSpaces = true };
                     var psr = ed.GetString(pso);
                     if (psr.Status != PromptStatus.OK || psr.StringResult == string.Empty)
                     {
@@ -142,15 +146,14 @@
                     PromptEntityResult entRes = null;
                     if (preSelectTxt == null)
                     {
-                        var entOpt = new PromptEntityOptions("\n" + Language.GetItem(LangItem, "msg4"));
-                        entOpt.SetMessageAndKeywords("\n" + Language.GetItem(LangItem, "msg5"), Language.GetItem(LangItem, "msg6"));
-                        entOpt.SetRejectMessage("\n" + Language.GetItem(LangItem, "msg7"));
+                        var entOpt = new PromptEntityOptions($"\n{Language.GetItem("msg4")}");
+                        entOpt.SetMessageAndKeywords($"\n{Language.GetItem("msg5")}", Language.GetItem("msg6"));
+                        entOpt.SetRejectMessage($"\n{Language.GetItem("msg7")}");
                         entOpt.AddAllowedClass(typeof(DBText), false);
                         entRes = ed.GetEntity(entOpt);
                         if (entRes.Status == PromptStatus.Keyword)
                         {
-                            UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpTxtCenter",
-                                "WorkVariant", "New", true);
+                            UserConfigFile.SetValue(LangItem, "WorkVariant", "New", true);
                             MpTxtCenterNew();
                             break;
                         }
@@ -159,7 +162,7 @@
                             return;
                     }
 
-                    var pointOpt = new PromptPointOptions("\n" + Language.GetItem(LangItem, "msg8"));
+                    var pointOpt = new PromptPointOptions($"\n{Language.GetItem("msg8")}");
                     var pointRes = ed.GetPoint(pointOpt);
                     if (pointRes.Status != PromptStatus.OK)
                         return;

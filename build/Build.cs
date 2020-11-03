@@ -18,7 +18,7 @@ class Build : NukeBuild
 
     // If the solution name and the project (plugin) name are different, then indicate the project (plugin) name here
     string PluginName => Solution.Name;
-
+    
     Target Compile => _ => _
         .Executes(() =>
         {
@@ -30,7 +30,7 @@ class Build : NukeBuild
             
             var postBuild = Environment.GetEnvironmentVariable("ModPlusPostBuild");
             var build = new List<string>();
-            foreach (var (_, c) in project.Configurations)
+            foreach (var (_, c) in Solution.Configurations)
             {
                 var configuration = c.Split("|")[0];
                 var platform = c.Split("|")[1];
@@ -38,7 +38,7 @@ class Build : NukeBuild
                 if (configuration == "Debug" || build.Contains(configuration))
                     continue;
 
-                Logger.Success($"Configuration: {configuration}");
+                Logger.Success($"Configuration: {c}");
                 
                 build.Add(configuration);
 

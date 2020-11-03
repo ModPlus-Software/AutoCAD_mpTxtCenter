@@ -1,15 +1,15 @@
-﻿#pragma warning disable SA1600 // Elements should be documented
-namespace mpTxtCenter
+﻿namespace mpTxtCenter
 {
     using System;
     using System.Collections.Generic;
-    using ModPlusAPI.Interfaces;
+    using ModPlusAPI.Abstractions;
+    using ModPlusAPI.Enums;
 
-    public class ModPlusConnector : IModPlusFunctionInterface
+    /// <inheritdoc/>
+    public partial class ModPlusConnector : IModPlusPlugin
     {
+        /// <inheritdoc/>
         public SupportedProduct SupportedProduct => SupportedProduct.AutoCAD;
-        
-        public string Name => "mpTxtCenter";
 
 #if A2013
         public string AvailProductExternalVersion => "2013";
@@ -28,40 +28,59 @@ namespace mpTxtCenter
 #elif A2020
         public string AvailProductExternalVersion => "2020";
 #elif A2021
+        /// <inheritdoc/>
         public string AvailProductExternalVersion => "2021";
 #endif
 
+        /// <inheritdoc/>
+        public string Name => "mpTxtCenter";
+
+        /// <inheritdoc/>
         public string FullClassName => string.Empty;
-        
+
+        /// <inheritdoc/>
         public string AppFullClassName => string.Empty;
-        
+
+        /// <inheritdoc/>
         public Guid AddInId => Guid.Empty;
-        
+
+        /// <inheritdoc/>
         public string LName => "Текст по центру";
-        
+
+        /// <inheritdoc/>
         public string Description => "Плагин позволяет создавать однострочный текст или выравнивать существующий по середине между двумя указанными точками";
-        
+
+        /// <inheritdoc/>
         public string Author => "Пекшев Александр aka Modis";
-        
+
+        /// <inheritdoc/>
         public string Price => "0";
-        
+
+        /// <inheritdoc/>
         public bool CanAddToRibbon => true;
-        
+
+        /// <inheritdoc/>
         public string FullDescription => string.Empty;
-        
+
+        /// <inheritdoc/>
         public string ToolTipHelpImage => string.Empty;
-        
-        public List<string> SubFunctionsNames => new List<string>();
-        
-        public List<string> SubFunctionsLames => new List<string>();
-        
+
+        /// <inheritdoc/>
+        public List<string> SubPluginsNames => new List<string>();
+
+        /// <inheritdoc/>
+        public List<string> SubPluginsLNames => new List<string>();
+
+        /// <inheritdoc/>
         public List<string> SubDescriptions => new List<string>();
-        
+
+        /// <inheritdoc/>
         public List<string> SubFullDescriptions => new List<string>();
-        
+
+        /// <inheritdoc/>
         public List<string> SubHelpImages => new List<string>();
-        
+
+        /// <inheritdoc/>
         public List<string> SubClassNames => new List<string>();
     }
 }
-#pragma warning restore SA1600 // Elements should be documented
